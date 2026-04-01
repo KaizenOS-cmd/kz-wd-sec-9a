@@ -1,1 +1,844 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><title>Placeholder</title></head><body><p>Coming soon.</p></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Workday Security Groups & Domain Policies SOP — Kaizen OS</title>
+<style>
+  :root {
+    --bg: #0e0e0e;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --accent: #c8f04a;
+    --accent-dim: #a8cc30;
+    --text: #e8e8e8;
+    --text-muted: #888;
+    --text-dim: #555;
+    --tip: #1a2e1a;
+    --tip-border: #4caf50;
+    --tip-text: #a5d6a7;
+    --warn: #2e1a0e;
+    --warn-border: #ff9800;
+    --warn-text: #ffcc80;
+    --note: #1a1e2e;
+    --note-border: #5c7cfa;
+    --note-text: #a5b4fc;
+    --rationale: #2a1e2e;
+    --rationale-border: #a855f7;
+    --rationale-text: #d8b4fe;
+    --critical: #2e0e0e;
+    --critical-border: #ef4444;
+    --critical-text: #fca5a5;
+    --font: 'Segoe UI', system-ui, sans-serif;
+    --mono: 'Courier New', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.7; }
+
+  .page { max-width: 900px; margin: 0 auto; padding: 48px 32px; }
+
+  /* COVER */
+  .cover { border-bottom: 1px solid var(--border); padding-bottom: 48px; margin-bottom: 48px; }
+  .series-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(200,240,74,0.06); border: 1px solid rgba(200,240,74,0.2); border-radius: 4px; padding: 5px 12px; margin-bottom: 12px; }
+  .series-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: var(--accent-dim); text-transform: uppercase; }
+  .brand-tag { display: inline-flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 6px 14px; margin-bottom: 28px; margin-left: 8px; }
+  .brand-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
+  .brand-name { font-size: 12px; font-weight: 700; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; }
+  .cover-title { font-size: 36px; font-weight: 800; line-height: 1.2; color: #fff; margin-bottom: 12px; }
+  .cover-title span { color: var(--accent); }
+  .cover-sub { font-size: 16px; color: var(--text-muted); margin-bottom: 32px; max-width: 620px; }
+  .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+  .meta-item { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 16px; }
+  .meta-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+  .meta-value { font-size: 14px; color: var(--text); font-weight: 600; }
+
+  /* TOC */
+  .toc { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px 28px; margin-bottom: 48px; }
+  .toc-title { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px; }
+  .toc-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .toc-list li { display: flex; align-items: center; gap: 12px; }
+  .toc-num { font-size: 11px; font-weight: 700; color: var(--accent); font-family: var(--mono); min-width: 24px; }
+  .toc-list a { color: var(--text-muted); text-decoration: none; font-size: 14px; transition: color 0.2s; }
+  .toc-list a:hover { color: var(--accent); }
+
+  /* SECTIONS */
+  .section { margin-bottom: 56px; scroll-margin-top: 24px; }
+  .section-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .section-num { font-size: 11px; font-weight: 800; font-family: var(--mono); color: var(--accent); background: rgba(200,240,74,0.08); border: 1px solid rgba(200,240,74,0.2); border-radius: 4px; padding: 4px 8px; margin-top: 4px; white-space: nowrap; }
+  .section-title { font-size: 22px; font-weight: 700; color: #fff; }
+  .section-desc { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+
+  /* CALLOUTS */
+  .callout { border-left: 3px solid; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 20px 0; }
+  .callout-label { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+  .callout-body { font-size: 14px; line-height: 1.6; }
+  .callout.tip { background: var(--tip); border-color: var(--tip-border); }
+  .callout.tip .callout-label { color: var(--tip-border); }
+  .callout.tip .callout-body { color: var(--tip-text); }
+  .callout.warn { background: var(--warn); border-color: var(--warn-border); }
+  .callout.warn .callout-label { color: var(--warn-border); }
+  .callout.warn .callout-body { color: var(--warn-text); }
+  .callout.note { background: var(--note); border-color: var(--note-border); }
+  .callout.note .callout-label { color: var(--note-border); }
+  .callout.note .callout-body { color: var(--note-text); }
+  .callout.rationale { background: var(--rationale); border-color: var(--rationale-border); }
+  .callout.rationale .callout-label { color: var(--rationale-border); }
+  .callout.rationale .callout-body { color: var(--rationale-text); }
+  .callout.critical { background: var(--critical); border-color: var(--critical-border); }
+  .callout.critical .callout-label { color: var(--critical-border); }
+  .callout.critical .callout-body { color: var(--critical-text); }
+
+  /* STEPS */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step { display: flex; gap: 20px; position: relative; }
+  .step:not(:last-child)::after { content: ''; position: absolute; left: 18px; top: 44px; bottom: 0; width: 1px; background: var(--border); }
+  .step-num { width: 36px; height: 36px; border-radius: 50%; background: var(--surface2); border: 2px solid var(--accent); color: var(--accent); font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 4px; font-family: var(--mono); position: relative; z-index: 1; }
+  .step-content { flex: 1; padding-bottom: 28px; }
+  .step-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .step-body { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .checklist li { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; color: var(--text); }
+  .check-box { width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 3px; flex-shrink: 0; margin-top: 2px; cursor: pointer; transition: all 0.2s; }
+  .check-box.checked { background: var(--accent); border-color: var(--accent); }
+  .check-label { flex: 1; }
+  .check-label small { display: block; color: var(--text-dim); font-size: 12px; margin-top: 2px; }
+
+  /* TABLE */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .data-table th { background: var(--surface2); color: var(--text-muted); font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+  .data-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 3px; }
+  .badge.high { background: rgba(255,99,99,0.15); color: #ff9999; }
+  .badge.med { background: rgba(255,165,0,0.15); color: #ffcc80; }
+  .badge.low { background: rgba(76,175,80,0.15); color: #a5d6a7; }
+  .badge.critical { background: rgba(239,68,68,0.2); color: #fca5a5; }
+  .badge.info { background: rgba(92,124,250,0.15); color: #a5b4fc; }
+
+  /* DECISION MATRIX */
+  .decision-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+  .decision-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px; }
+  .decision-card-title { font-size: 13px; font-weight: 700; color: var(--accent-dim); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+  .decision-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 0; }
+  .decision-card ul { font-size: 13px; color: var(--text-muted); padding-left: 16px; }
+
+  /* CODE */
+  .code-block { background: #0a0a0a; border: 1px solid var(--border); border-radius: 6px; padding: 16px 20px; font-family: var(--mono); font-size: 13px; color: #a5d6a7; overflow-x: auto; margin: 16px 0; line-height: 1.6; }
+
+  /* NOTES */
+  .notes-area { background: var(--surface); border: 1px dashed var(--border); border-radius: 8px; padding: 24px; }
+  .notes-area p { color: var(--text-dim); font-size: 13px; margin-bottom: 16px; font-style: italic; }
+  .notes-field { background: transparent; border: none; border-bottom: 1px solid var(--border); width: 100%; color: var(--text); font-family: var(--font); font-size: 14px; padding: 8px 0; margin-bottom: 16px; outline: none; }
+  .notes-field::placeholder { color: var(--text-dim); }
+  .notes-field:focus { border-color: var(--accent); }
+  .notes-textarea { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; width: 100%; color: var(--text); font-family: var(--font); font-size: 14px; padding: 12px 16px; outline: none; resize: vertical; min-height: 120px; }
+  .notes-textarea:focus { border-color: var(--accent); }
+  .notes-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .notes-field-label { font-size: 11px; color: var(--text-dim); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* SUBSECTION */
+  .subsection { margin: 28px 0; }
+  .subsection-title { font-size: 14px; font-weight: 700; color: var(--accent-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  /* MATURITY METER */
+  .maturity-bar { display: flex; gap: 4px; margin: 12px 0; }
+  .maturity-seg { flex: 1; height: 6px; border-radius: 3px; background: var(--border); }
+  .maturity-seg.active { background: var(--accent); }
+  .maturity-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--border); padding-top: 32px; margin-top: 64px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  .footer-brand { font-size: 12px; font-weight: 700; color: var(--accent); letter-spacing: 2px; }
+  .footer-note { font-size: 12px; color: var(--text-dim); }
+
+  p { margin-bottom: 12px; color: var(--text-muted); font-size: 14px; }
+  ul, ol { padding-left: 20px; color: var(--text-muted); font-size: 14px; line-height: 1.8; }
+  strong { color: var(--text); }
+
+  @media print {
+    body { background: #fff; color: #000; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- COVER -->
+  <div class="cover">
+    <div style="display:flex;align-items:center;gap:0;margin-bottom:28px;flex-wrap:wrap;gap:8px;">
+      <div class="series-tag"><span class="series-label">Workday SOP Series · Vol. 02</span></div>
+      <div class="brand-tag"><div class="brand-dot"></div><span class="brand-name">Kaizen OS</span></div>
+    </div>
+    <div class="cover-title">Security Groups &amp;<br><span>&amp; Domain Policies</span></div>
+    <p class="cover-sub">A practitioner-grade SOP for designing, configuring, and governing Workday security — from security group architecture to domain policy assignment, role-based access control, and audit readiness.</p>
+    <div class="meta-grid">
+      <div class="meta-item"><div class="meta-label">Document Type</div><div class="meta-value">SOP Template</div></div>
+      <div class="meta-item"><div class="meta-label">Series Volume</div><div class="meta-value">02 of 06</div></div>
+      <div class="meta-item"><div class="meta-label">Audience</div><div class="meta-value">Workday Admins / Consultants</div></div>
+      <div class="meta-item"><div class="meta-label">Scope</div><div class="meta-value">Security Architecture</div></div>
+      <div class="meta-item"><div class="meta-label">Version</div><div class="meta-value">1.0</div></div>
+      <div class="meta-item"><div class="meta-label">Status</div><div class="meta-value">Active</div></div>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">Table of Contents</div>
+    <ul class="toc-list">
+      <li><span class="toc-num">01</span><a href="#s1">How to Use This SOP</a></li>
+      <li><span class="toc-num">02</span><a href="#s2">Security Architecture Primer</a></li>
+      <li><span class="toc-num">03</span><a href="#s3">Pre-Configuration Checklist</a></li>
+      <li><span class="toc-num">04</span><a href="#s4">Security Group Configuration — Step-by-Step</a></li>
+      <li><span class="toc-num">05</span><a href="#s5">Domain &amp; Business Process Policy Assignment</a></li>
+      <li><span class="toc-num">06</span><a href="#s6">Validation, Testing &amp; Activation</a></li>
+      <li><span class="toc-num">07</span><a href="#s7">Audit Readiness &amp; Ongoing Governance</a></li>
+      <li><span class="toc-num">08</span><a href="#s8">Rollback &amp; Risk Notes</a></li>
+      <li><span class="toc-num">09</span><a href="#s9">Operator Notes</a></li>
+      <li><span class="toc-num">10</span><a href="#s10">Change Log</a></li>
+    </ul>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section" id="s1">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div>
+        <div class="section-title">How to Use This SOP</div>
+        <div class="section-desc">Read before executing any security configuration</div>
+      </div>
+    </div>
+    <p>Workday security is foundational — mistakes here affect every worker, every process, and every audit. This SOP provides a structured, repeatable approach to security group design and domain policy assignment for both greenfield builds and post-go-live changes.</p>
+
+    <div class="callout critical">
+      <div class="callout-label">🔴 Critical</div>
+      <div class="callout-body">Security changes in Workday are <strong>not immediately reversible</strong> without an Activate Pending Security Policy Changes step. This creates a window to review — but once activated, incorrect changes can lock users out of critical tasks or expose sensitive data. Always test in sandbox before production. Always have a named approver for every security change.</div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Intended Use Cases</div>
+      <ul>
+        <li>New Workday implementation — initial security model design and configuration</li>
+        <li>Post-go-live security group additions for new roles, orgs, or acquired entities</li>
+        <li>Annual access reviews and security model remediation</li>
+        <li>Consultant handover — documenting the as-built security architecture for client teams</li>
+        <li>Audit preparation — producing evidence of least-privilege access controls</li>
+      </ul>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-label">✅ Tip</div>
+      <div class="callout-body">Duplicate this document per security group or per role family. Name files using your org's convention (e.g., <em>SOP_SG_HR_Partner_v1.0_2026.html</em>). Treat each file as the living record of that group's design intent — invaluable during audits and Works Council reviews.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section" id="s2">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div>
+        <div class="section-title">Security Architecture Primer</div>
+        <div class="section-desc">Core concepts before you configure anything</div>
+      </div>
+    </div>
+    <p>Workday security operates on a layered model. Understanding all three layers — Security Groups, Domain Security Policies, and Business Process Security Policies — is required before touching any configuration.</p>
+
+    <div class="decision-grid">
+      <div class="decision-card">
+        <div class="decision-card-title">Security Groups</div>
+        <p>Define <strong>who</strong> can access what. Groups are collections of users (via role, org membership, or explicit assignment). All access flows through group membership — never directly to individual users.</p>
+      </div>
+      <div class="decision-card">
+        <div class="decision-card-title">Domain Security Policies</div>
+        <p>Define <strong>what data</strong> is accessible. Domains are functional areas (e.g., Worker Data, Compensation, Benefits). Each domain has Get/Put permissions assigned per security group.</p>
+      </div>
+      <div class="decision-card">
+        <div class="decision-card-title">Business Process Policies</div>
+        <p>Define <strong>what actions</strong> are permitted. Each business process (e.g., Hire, Terminate, Change Job) has initiate, approve, and view permissions per security group.</p>
+      </div>
+      <div class="decision-card">
+        <div class="decision-card-title">Constrained vs. Unconstrained</div>
+        <p>Security groups can be <strong>constrained</strong> (access limited to workers in a specific org hierarchy) or <strong>unconstrained</strong> (global access). Always default to constrained for HR roles.</p>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Security Group Types — Decision Guide</div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Group Type</th><th>Membership Basis</th><th>Best For</th><th>Constraint Support</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Role-Based</strong></td>
+          <td>Assigned via staffing role on a position or supervisory org</td>
+          <td>HR Partners, Recruiters, Managers</td>
+          <td><span class="badge low">Constrained</span></td>
+        </tr>
+        <tr>
+          <td><strong>User-Based</strong></td>
+          <td>Explicit user list — manually maintained</td>
+          <td>Admins, Super Users, temporary access</td>
+          <td><span class="badge info">Unconstrained</span></td>
+        </tr>
+        <tr>
+          <td><strong>Job-Based</strong></td>
+          <td>Automatically assigned by job profile or job family</td>
+          <td>Self-service access (ESS/MSS)</td>
+          <td><span class="badge low">Constrained</span></td>
+        </tr>
+        <tr>
+          <td><strong>Intersection</strong></td>
+          <td>Combination of two existing groups</td>
+          <td>Layered access (e.g., HR Partner within specific org)</td>
+          <td><span class="badge low">Constrained</span></td>
+        </tr>
+        <tr>
+          <td><strong>Aggregation</strong></td>
+          <td>Union of multiple security groups</td>
+          <td>Simplifying policy assignments across groups</td>
+          <td><span class="badge info">Varies</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout rationale">
+      <div class="callout-label">💡 Rationale</div>
+      <div class="callout-body">Most organisations over-rely on User-Based groups because they're easy to set up. This creates maintenance debt — every new hire in an admin role requires a manual update. Design toward Role-Based groups wherever possible. Reserve User-Based for genuine exceptions (system accounts, break-glass access).</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section" id="s3">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div>
+        <div class="section-title">Pre-Configuration Checklist</div>
+        <div class="section-desc">Complete all items before beginning security group setup</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Design &amp; Governance Readiness</div>
+      <ul class="checklist">
+        <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">Security model design document completed and reviewed<small>Should include all role families, org scope, constrained vs. unconstrained decisions, and domain access matrix</small></span></li>
+        <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">Least-privilege principle applied — access justified for each domain<small>Each domain permission must map to a documented business need. No blanket "give them everything" groups.</small></span></li>
+        <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">Naming convention defined and documented for all security groups<small>[ORG-SPECIFIC] Example: SG_[TYPE]_[FUNCTION]_[SCOPE] → SG_RB_HRPartner_EMEA</small></span></li>
+        <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">Domain Access Matrix drafted — maps each role to required domains with Get/Put permissions</span></li>
+        <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">Business Process Policy Matrix drafted — maps each role to BP initiation, approval, and view rights</span></li>
+      </ul>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Stakeholder Sign-offs</div>
+      <ul class="checklist">
+        <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">HRIS / Workday Security lead approval on design<small>[ORG-SPECIFIC]</small></span></li>
+        <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">HR leadership sign-off on HR Partner and Manager access scope</span></li>
+        <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">IT / Cybersecurity review completed for any admin or elevated access groups</span></li>
+        <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">Privacy / DPO review for groups accessing PII, compensation, or health data<small>Required for GDPR-regulated entities. Document the legal basis for access per data category.</small></span></li>
+        <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">Works Council / co-determination notification completed if required<small>[ORG-SPECIFIC] Some jurisdictions require Works Council notification before changes to employee monitoring or data access systems</small></span></li>
+      </ul>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Tenant Readiness</div>
+      <ul class="checklist">
+        <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">Sandbox tenant refreshed and confirmed current with production data</span></li>
+        <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">Test user accounts available for each role persona being configured</span></li>
+        <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">Org hierarchy confirmed — supervisory orgs exist and are correctly structured for constrained group testing</span></li>
+        <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">Existing security groups audited — no duplicate or redundant groups to be created</span></li>
+      </ul>
+    </div>
+
+    <div class="callout warn">
+      <div class="callout-label">⚠️ Warning</div>
+      <div class="callout-body">Do not begin Section 04 without completing the Domain Access Matrix and Business Process Policy Matrix. Configuring security groups without a documented access design leads to scope creep, over-permissioning, and failed audits.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section" id="s4">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <div>
+        <div class="section-title">Security Group Configuration — Step-by-Step</div>
+        <div class="section-desc">Creating, configuring, and scoping security groups in Workday</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Part A — Creating a Role-Based Security Group (Most Common)</div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Navigate to Create Security Group</div>
+          <div class="step-body">Search <strong>Create Security Group</strong> in the Workday search bar. Select the group type: <strong>Role-Based Security Group</strong>. Enter the group name per your naming convention. Add a description — be specific about the intended role and access scope. This description is visible to auditors and future admins.</div>
+          <div class="callout tip"><div class="callout-label">✅ Tip</div><div class="callout-body">Write descriptions in plain language that a non-technical HR leader can understand. Example: <em>"Grants EMEA HR Partners access to view and edit worker data, compensation, and absence records for workers in their assigned supervisory org hierarchy."</em></div></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Assign the Workday Role</div>
+          <div class="step-body">In the <strong>Workday Role</strong> field, select or create the staffing role that drives group membership (e.g., HR Partner, Recruiter, Benefits Partner). If the role does not exist, navigate to <strong>Create Role</strong> first and define it — roles are the mechanism that connects workers to security groups automatically when assigned to a position.</div>
+          <div class="callout note"><div class="callout-label">📋 Note</div><div class="callout-body">Role assignment happens at the Supervisory Org level. A worker gains security group membership when they are assigned the matching role on a supervisory org — and loses it automatically when the role is removed or they leave. This is the self-maintaining nature of role-based groups.</div></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Configure the Constrained Scope</div>
+          <div class="step-body">Under <strong>Permitted Security Groups to Administer</strong>, define whether this group is <strong>org-constrained</strong> (access limited to the org hierarchy where the role is assigned) or <strong>unrestricted</strong>. For HR Partner groups, always select org-constrained. Confirm the constraint applies to all downstream worker data access — not just the top-level org.</div>
+          <div class="callout critical"><div class="callout-label">🔴 Critical</div><div class="callout-body">Selecting <strong>Unrestricted</strong> grants the security group access to ALL workers across the entire tenant. This is appropriate only for Global HRIS Admin and senior platform owners. For every other role, constrained access is mandatory.</div></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Save &amp; Document</div>
+          <div class="step-body">Save the security group. Copy the Workday system ID from the URL and record it in your Domain Access Matrix and Operator Notes (Section 09). At this stage the group exists but has no permissions — domain and BP policy assignment follows in Section 05.</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="subsection">
+      <div class="subsection-title">Part B — Creating a User-Based Security Group</div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Create &amp; Name the Group</div>
+          <div class="step-body">Search <strong>Create Security Group</strong> → select <strong>User-Based Security Group</strong>. Apply your naming convention. In the description, document the specific reason this is user-based rather than role-based, and the review cadence (e.g., <em>"Quarterly access review required — see Change Log"</em>).</div>
+          <div class="callout rationale"><div class="callout-label">💡 Rationale</div><div class="callout-body">Forcing yourself to document why a group is user-based creates accountability. It also flags the group as requiring active maintenance — unlike role-based groups, user-based groups do not self-update when workers change roles or leave.</div></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Add Members</div>
+          <div class="step-body">Navigate to the group → <strong>Maintain Members for Security Group</strong>. Add users individually by searching for their Workday accounts. Confirm each user's access is still required before adding — do not copy membership from a previous group without verification.</div>
+          <div class="callout warn"><div class="callout-label">⚠️ Warning</div><div class="callout-body">User-Based group membership does NOT automatically remove terminated workers. Schedule a quarterly review task to audit membership — terminated workers retaining group membership is a common SOX and GDPR audit finding.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="subsection">
+      <div class="subsection-title">Part C — Creating an Intersection Security Group</div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Identify the Two Parent Groups</div>
+          <div class="step-body">Intersection groups restrict access to workers who appear in <em>both</em> parent groups. Common use case: an HR Partner who should only see Compensation data for workers in their supervisory org. Parent Group 1: the HR Partner role-based group. Parent Group 2: a compensation data group.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Create the Intersection Group</div>
+          <div class="step-body">Search <strong>Create Security Group</strong> → select <strong>Intersection Security Group</strong>. Select the two parent groups. Name and describe the intersection clearly — include both parent group names in the description. Save. Assign domain policies for the intersection-specific permissions in Section 05.</div>
+          <div class="callout note"><div class="callout-label">📋 Note</div><div class="callout-body">Intersection groups do not inherit permissions from parent groups — they must be independently assigned domain and BP policies. This is a common configuration error: creating the intersection but forgetting to assign it to any policies.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section" id="s5">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <div>
+        <div class="section-title">Domain &amp; Business Process Policy Assignment</div>
+        <div class="section-desc">Granting permissions to security groups via domain and BP policies</div>
+      </div>
+    </div>
+    <p>Creating a security group grants no access by itself. Access is granted through <strong>Domain Security Policies</strong> (data access) and <strong>Business Process Security Policies</strong> (action access). Both must be configured — and both require the <strong>Activate Pending Security Policy Changes</strong> step before taking effect.</p>
+
+    <div class="subsection">
+      <div class="subsection-title">Part A — Domain Security Policy Assignment</div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Navigate to the Domain Security Policy</div>
+          <div class="step-body">Search for the domain by name (e.g., <em>Worker Data: Personal Data</em>, <em>Compensation: Salary</em>). Use the <strong>Domain Security Policy</strong> task. Browse by functional area or use the search. Workday has hundreds of domains — use your Domain Access Matrix to identify exactly which domains are in scope.</div>
+          <div class="callout tip"><div class="callout-label">✅ Tip</div><div class="callout-body">Use the <strong>View Domain Security Policies for Security Group</strong> report to get a full list of domains currently assigned to a group. Run this before and after changes as a before/after audit record.</div></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Add the Security Group with Correct Permission Type</div>
+          <div class="step-body">Within the Domain Security Policy, navigate to <strong>Edit</strong>. Add your security group to the relevant permission tier:
+            <br><br>
+            <strong>Get</strong> — View/read access only<br>
+            <strong>Put</strong> — Create or edit access<br>
+            <strong>Get &amp; Put</strong> — Full read and write<br><br>
+            Apply the minimum permission level required. If the role only needs to view compensation data, assign Get only — never default to Get &amp; Put.</div>
+          <div class="callout critical"><div class="callout-label">🔴 Critical</div><div class="callout-body">Put permissions on sensitive domains (Compensation, Benefits, Banking) must be explicitly justified and approved. Assigning Put access to the wrong group is one of the most common security findings in Workday audits — and one of the hardest to remediate retroactively.</div></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Save &amp; Repeat for All In-Scope Domains</div>
+          <div class="step-body">Save the domain policy. Repeat for each domain in your Domain Access Matrix. Work through domains systematically by functional area — Worker Data, Compensation, Benefits, Absence, Recruiting — to avoid gaps. Track completion in your matrix.</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="subsection">
+      <div class="subsection-title">Part B — Business Process Security Policy Assignment</div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Navigate to the Business Process Security Policy</div>
+          <div class="step-body">Search <strong>Business Process Security Policy</strong> and select the relevant process (e.g., <em>Hire Employee</em>, <em>Change Job</em>, <em>Terminate Employee</em>). Each business process has its own policy. Identify all in-scope BPs from your BP Policy Matrix before beginning.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Assign Initiate, Approve, or View Permissions</div>
+          <div class="step-body">Within the BP Security Policy, assign the security group to the appropriate permission type:
+            <br><br>
+            <strong>Initiate</strong> — Can start the business process<br>
+            <strong>Approve</strong> — Can approve steps in the process<br>
+            <strong>View</strong> — Can see process events but not act on them<br><br>
+            For HR Partner groups, typical assignment is Initiate + View on most HR BPs, with Approve reserved for managers and HR leadership.</div>
+          <div class="callout warn"><div class="callout-label">⚠️ Warning</div><div class="callout-body">Initiate permission on Terminate Employee or Change Job must be constrained. An unconstrained Initiate on Terminate Employee effectively allows the user to terminate any worker in the system. Always verify constraint applies before activating.</div></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Activate Pending Security Policy Changes</div>
+          <div class="step-body">Once all domain and BP policy changes are saved, navigate to <strong>Activate Pending Security Policy Changes</strong>. Enter a comment describing the changes being activated (this is your audit trail). Review the pending changes list carefully — confirm only your intended changes are listed. Click <strong>OK</strong> to activate.</div>
+          <div class="callout critical"><div class="callout-label">🔴 Critical</div><div class="callout-body">Activating security policy changes is <strong>immediate and affects all users</strong> in the impacted security groups. In production, always activate during a low-traffic window. In sandbox, activate freely to test. Never activate production security changes without a second reviewer confirming the pending changes list.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="section" id="s6">
+    <div class="section-header">
+      <div class="section-num">06</div>
+      <div>
+        <div class="section-title">Validation, Testing &amp; Activation</div>
+        <div class="section-desc">Confirming access works as designed before sign-off</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">View As — Persona Testing</div>
+    </div>
+    <p>Workday's <strong>View As</strong> feature allows you to simulate the system as a specific user or security group. Use this to validate access before activating in production.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Use View As for Each Role Persona</div>
+          <div class="step-body">Navigate to <strong>View Workday Account</strong> → select a test user assigned to the security group. Click <strong>Switch to This Account</strong>. Navigate through the expected workflows for that persona. Confirm: menus display correctly, restricted data is hidden, permitted tasks are accessible.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Test Constraint Boundaries</div>
+          <div class="step-body">For constrained groups, attempt to access a worker <em>outside</em> the test user's org scope. Confirm that the worker's record is not accessible or returns a security error. This is the most important test for HR Partner and Manager groups — constraint failures expose PII across org boundaries.</div>
+          <div class="callout tip"><div class="callout-label">✅ Tip</div><div class="callout-body">Create two test workers — one inside the org scope, one outside. Test both in the same session. Document the results with screenshots for your audit record.</div></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Test Business Process Initiation</div>
+          <div class="step-body">As the test persona, attempt to initiate each Business Process in scope (e.g., Change Job, Request Absence). Confirm the task is available and the workflow routes correctly. Attempt a BP outside scope — confirm it is inaccessible or returns a security error.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Validation Checklist</div>
+    </div>
+    <ul class="checklist">
+      <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">View As test completed for each security group persona<small>At least one test user per group; document results</small></span></li>
+      <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">Constraint boundary tested — out-of-scope workers inaccessible</span></li>
+      <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">All in-scope Business Processes initiate correctly</span></li>
+      <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">Out-of-scope Business Processes return security error as expected</span></li>
+      <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">Sensitive domains (Compensation, Banking) confirmed inaccessible to non-permitted groups</span></li>
+      <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">Workday reports confirm correct group membership for test users</span></li>
+      <li><span class="check-box" onclick="toggleCheck(this)"></span><span class="check-label">UAT sign-off obtained from HR lead and IT Security reviewer</span></li>
+    </ul>
+  </div>
+
+  <!-- SECTION 7 -->
+  <div class="section" id="s7">
+    <div class="section-header">
+      <div class="section-num">07</div>
+      <div>
+        <div class="section-title">Audit Readiness &amp; Ongoing Governance</div>
+        <div class="section-desc">Maintaining a clean, defensible security model over time</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Quarterly Access Review — Required Reports</div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Report / Task</th><th>Purpose</th><th>Frequency</th><th>Owner</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>View All Security Groups</td><td>Full inventory of all security groups — spot duplicates and orphaned groups</td><td><span class="badge med">Quarterly</span></td><td>HRIS Admin</td></tr>
+        <tr><td>Security Group Membership — User-Based</td><td>Identify terminated workers still in user-based groups</td><td><span class="badge high">Monthly</span></td><td>HRIS Admin</td></tr>
+        <tr><td>Domain Security Policy Report</td><td>Full access matrix — which groups have Get/Put on each domain</td><td><span class="badge med">Quarterly</span></td><td>HRIS + IT Security</td></tr>
+        <tr><td>Unconstrained Security Groups Report</td><td>List all unrestricted groups — validate each one is still justified</td><td><span class="badge med">Quarterly</span></td><td>HRIS Admin</td></tr>
+        <tr><td>Security Audit Report (Workday delivered)</td><td>Changes made to security configuration — full change history</td><td><span class="badge low">Annual / On demand</span></td><td>HRIS + Internal Audit</td></tr>
+        <tr><td>Role Assignment by Organisation</td><td>Validate HR Partner and Manager role assignments are current</td><td><span class="badge med">Quarterly</span></td><td>HR Operations</td></tr>
+      </tbody>
+    </table>
+
+    <div class="subsection">
+      <div class="subsection-title">Security Model Maturity Indicators</div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;margin:16px 0;">
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Rate your current security model maturity across five dimensions:</div>
+
+      <div style="margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text);margin-bottom:6px;"><span>Naming Convention Consistency</span><span style="color:var(--accent-dim);">Use naming standards across all groups</span></div>
+        <div class="maturity-bar"><div class="maturity-seg active"></div><div class="maturity-seg active"></div><div class="maturity-seg active"></div><div class="maturity-seg"></div><div class="maturity-seg"></div></div>
+        <div class="maturity-labels"><span>Ad hoc</span><span>Optimised</span></div>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text);margin-bottom:6px;"><span>Role-Based vs. User-Based Ratio</span><span style="color:var(--accent-dim);">Maximise role-based, minimise user-based</span></div>
+        <div class="maturity-bar"><div class="maturity-seg active"></div><div class="maturity-seg active"></div><div class="maturity-seg"></div><div class="maturity-seg"></div><div class="maturity-seg"></div></div>
+        <div class="maturity-labels"><span>Mostly user-based</span><span>Fully role-based</span></div>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text);margin-bottom:6px;"><span>Quarterly Review Cadence</span><span style="color:var(--accent-dim);">Documented, scheduled, evidenced</span></div>
+        <div class="maturity-bar"><div class="maturity-seg active"></div><div class="maturity-seg"></div><div class="maturity-seg"></div><div class="maturity-seg"></div><div class="maturity-seg"></div></div>
+        <div class="maturity-labels"><span>No reviews</span><span>Fully automated</span></div>
+      </div>
+
+      <div style="margin-bottom:4px;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text);margin-bottom:6px;"><span>Domain Access Documentation</span><span style="color:var(--accent-dim);">Access matrix maintained and current</span></div>
+        <div class="maturity-bar"><div class="maturity-seg active"></div><div class="maturity-seg active"></div><div class="maturity-seg active"></div><div class="maturity-seg active"></div><div class="maturity-seg"></div></div>
+        <div class="maturity-labels"><span>Undocumented</span><span>Fully documented</span></div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-label">✅ Tip</div>
+      <div class="callout-body">Store quarterly access review outputs (reports, screenshots, sign-off emails) in a dedicated SharePoint or Confluence folder tagged by quarter. During SOX or ISO 27001 audits, you need evidence of review — not just assertions that reviews happened.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 8 -->
+  <div class="section" id="s8">
+    <div class="section-header">
+      <div class="section-num">08</div>
+      <div>
+        <div class="section-title">Rollback &amp; Risk Notes</div>
+        <div class="section-desc">Reversing incorrect security changes and managing common risks</div>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Identify the Incorrect Change</div>
+          <div class="step-body">Navigate to <strong>Security Audit Report</strong> or <strong>View Security Policy Change History</strong>. Identify the specific domain policy or BP policy that was incorrectly changed. Note the security group affected, the permission type, and the activation timestamp.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Remove the Incorrect Permission</div>
+          <div class="step-body">Navigate to the domain or BP policy. Edit — remove the security group from the incorrect permission tier or remove the group entirely if it should not have been added. Save the change. At this point, the correction is <em>pending</em> — it has not yet taken effect.</div>
+          <div class="callout warn"><div class="callout-label">⚠️ Warning</div><div class="callout-body">Between activation of an incorrect change and activation of the correction, users may have accessed data or initiated BPs they should not have. If sensitive data (compensation, banking, health) was accessed, escalate to your DPO — this may constitute a reportable data incident.</div></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Activate the Correction</div>
+          <div class="step-body">Run <strong>Activate Pending Security Policy Changes</strong>. Add a detailed comment referencing the incident (e.g., <em>"Correction — SG_RB_HRPartner_EMEA incorrectly granted Put on Compensation:Salary on [date]. Removed per incident [REF]."</em>). This comment is your permanent audit record. Activate.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Validate &amp; Document</div>
+          <div class="step-body">Re-run View As testing to confirm the incorrect access is no longer available. Document the incident, root cause, correction, and any data access that occurred during the window in the Change Log (Section 10) and your incident management system.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Common Risk Scenarios</div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Risk</th><th>Severity</th><th>Mitigation</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Unconstrained group assigned to sensitive domain</td><td><span class="badge critical">Critical</span></td><td>Mandatory second reviewer on all unconstrained group policy assignments</td></tr>
+        <tr><td>Terminated worker remains in user-based group</td><td><span class="badge high">High</span></td><td>Monthly automated membership report; offboarding checklist includes security group review</td></tr>
+        <tr><td>Workday release changes domain structure</td><td><span class="badge med">Medium</span></td><td>Review Workday release notes for security changes; test in sandbox pre-release</td></tr>
+        <tr><td>Role assigned to wrong supervisory org</td><td><span class="badge high">High</span></td><td>Quarterly role assignment audit; HR Partner role changes require HRIS approval</td></tr>
+        <tr><td>Duplicate security groups with overlapping scope</td><td><span class="badge med">Medium</span></td><td>Annual security group rationalisation review; enforce naming convention at creation</td></tr>
+        <tr><td>Works Council / co-determination compliance failure</td><td><span class="badge critical">Critical</span></td><td>Include Works Council notification in pre-config checklist for all new monitoring-adjacent access</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 9 -->
+  <div class="section" id="s9">
+    <div class="section-header">
+      <div class="section-num">09</div>
+      <div>
+        <div class="section-title">Operator Notes</div>
+        <div class="section-desc">Organisation-specific security design decisions and sign-off records</div>
+      </div>
+    </div>
+    <p>Complete this section when adapting this SOP for a specific security group build. This is your org-specific config record — store it alongside this SOP and reference it during handovers, audits, and Works Council reviews.</p>
+
+    <div class="notes-area">
+      <p>Fill in your organisation-specific details. Fields are for documentation purposes.</p>
+      <div class="notes-row">
+        <div>
+          <div class="notes-field-label">Security Group Name</div>
+          <input class="notes-field" type="text" placeholder="e.g. SG_RB_HRPartner_EMEA"/>
+        </div>
+        <div>
+          <div class="notes-field-label">Security Group Type</div>
+          <input class="notes-field" type="text" placeholder="Role-Based / User-Based / Intersection"/>
+        </div>
+      </div>
+      <div class="notes-row">
+        <div>
+          <div class="notes-field-label">Configured By</div>
+          <input class="notes-field" type="text" placeholder="Name / role"/>
+        </div>
+        <div>
+          <div class="notes-field-label">Configuration Date</div>
+          <input class="notes-field" type="text" placeholder="DD/MM/YYYY"/>
+        </div>
+      </div>
+      <div class="notes-row">
+        <div>
+          <div class="notes-field-label">Approved By</div>
+          <input class="notes-field" type="text" placeholder="HRIS Lead / IT Security name"/>
+        </div>
+        <div>
+          <div class="notes-field-label">Constraint Scope</div>
+          <input class="notes-field" type="text" placeholder="e.g. EMEA orgs / Global / Unrestricted (justified)"/>
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <div class="notes-field-label">Domains Assigned (Get / Put)</div>
+        <textarea class="notes-textarea" placeholder="List each domain and the permission level granted. Example:&#10;Worker Data: Personal Data — Get&#10;Compensation: Salary — Get&#10;Absence: View Absence — Get&#10;Benefits: Enrolment — Get &amp; Put"></textarea>
+      </div>
+      <div style="margin-bottom:16px;">
+        <div class="notes-field-label">Business Processes Assigned (Initiate / Approve / View)</div>
+        <textarea class="notes-textarea" placeholder="List each BP and permission. Example:&#10;Change Job — Initiate, View&#10;Request Absence — Initiate&#10;Terminate Employee — View only"></textarea>
+      </div>
+      <div>
+        <div class="notes-field-label">Design Decisions, Exceptions &amp; Rationale</div>
+        <textarea class="notes-textarea" placeholder="Document any non-standard decisions, exceptions granted, stakeholder agreements, privacy/DPO review outcomes, Works Council notifications..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 10 -->
+  <div class="section" id="s10">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <div>
+        <div class="section-title">Change Log</div>
+        <div class="section-desc">Audit trail for all security configuration changes</div>
+      </div>
+    </div>
+    <p>Every change to a security group or its associated policies must be logged here. Security change logs are a primary evidence source for SOX, ISO 27001, and GDPR audit requests.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Version</th>
+          <th>Date</th>
+          <th>Changed By</th>
+          <th>Change Description</th>
+          <th>Incident / Ticket Ref</th>
+          <th>Approved By</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1.0</td>
+          <td>[Date]</td>
+          <td>[Name]</td>
+          <td>Initial security group creation and policy assignment</td>
+          <td>[Ticket]</td>
+          <td>[Approver]</td>
+        </tr>
+        <tr><td>—</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>—</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>—</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>—</td><td></td><td></td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout note" style="margin-top:24px;">
+      <div class="callout-label">📋 Note</div>
+      <div class="callout-body">Include the Workday Activate Pending Security Policy Changes comment verbatim in the Change Description column. This creates a direct link between this SOP and the Workday system audit trail — essential for regulatory audits.</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-brand">KAIZEN OS</div>
+    <div class="footer-note">Workday SOP Series Vol. 02 — Security Groups &amp; Domain Policies · v1.0 · © 2026 Kaizen OS. All rights reserved.</div>
+  </div>
+
+</div>
+
+<script>
+  function toggleCheck(el) { el.classList.toggle('checked'); }
+</script>
+</body>
+</html>
